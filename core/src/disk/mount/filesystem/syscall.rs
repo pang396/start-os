@@ -199,10 +199,11 @@ pub async fn userns_fd_from_idmap(
     // For an idmapped mount the kernel runs the on-disk id through
     // map_id_down (matched against col1, output col2), so col1 is the
     // on-disk id (IdMap::from_id) and col2 is the id the mount user sees
-    // (IdMap::to_id). Order: `from_id to_id range`.
+    // (IdMap::from_id). Order: `to_id from_id range` — col1=inside-ns (host shifted UIDs), col2=outside-ns (on-disk UIDs).
     let uid_map = idmap
         .iter()
-        .map(|i| format!("{} {} {}\n", i.from_id, i.to_id, i.range))
+        .map(|i| format!("{} {} {}
+", i.to_id, i.from_id, i.range))
         .collect::<String>();
     let gid_map = uid_map.clone();
 
